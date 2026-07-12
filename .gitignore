@@ -2,3 +2,4 @@
 node_modules/
 .vercel
 assets/ball951_*.png
+tools/refresh.log
