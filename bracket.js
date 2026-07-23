@@ -30,6 +30,18 @@ const ROUND_ACCENT = { R32: "var(--red-hot)", R16: "var(--green-hot)", QF: "var(
 
 /* ───────────────────────── bracket render ───────────────────────── */
 
+/* winner-by-side, computed from score/pens directly — doesn't rely on the
+   data model's m.w (which is only assigned for matches that feed the
+   bracket forward; the third-place match deliberately has none) */
+function sideWins(m, side) {
+  if (m.hs === null) return false;
+  const forSide = side === "home" ? m.hs : m.aws;
+  const against = side === "home" ? m.aws : m.hs;
+  if (forSide !== against) return forSide > against;
+  if (m.pens) return side === "home" ? m.pens[0] > m.pens[1] : m.pens[1] > m.pens[0];
+  return false;
+}
+
 function matchCard(n, opts = {}) {
   const m = KO[n];
   const played = m.hs !== null;
@@ -38,24 +50,30 @@ function matchCard(n, opts = {}) {
     const team = m[side];
     const tbd = isTBD(team);
     const score = played ? (side === "home" ? m.hs : m.aws) : "";
-    const win = played && m.w === team;
+    const win = played && sideWins(m, side);
     const code = tbd ? "·" : (CODE(team) || team.slice(0, 3).toUpperCase());
     const name = tbd ? tbdLabel(team) : team;
+    const place = opts.third && played
+      ? `<span class="bk-place-tag">${win ? "3rd" : "4th"}</span>` : "";
     return `<div class="bk-row${win ? " bk-win" : ""}${tbd ? " bk-tbd" : ""}">
       <span class="bk-code">${code}</span>
       <span class="bk-team">${name}</span>
       <span class="bk-score">${score}</span>
+      ${place}
     </div>`;
   }).join("");
   const notes = [];
   if (m.aet) notes.push("a.e.t.");
   if (m.pens) notes.push(`pens ${m.pens[0]}–${m.pens[1]}`);
+  const championRibbon = opts.final && played
+    ? `<span class="bk-champion-ribbon">🏆 ${sideWins(m, "home") ? m.home : m.away} — Champions 2026</span>` : "";
   return `<div class="bk-match${opts.final ? " bk-final" : ""}${opts.third ? " bk-third" : ""}" data-n="${n}" data-reveal-bk>
     ${today ? '<span class="bk-today">Today</span>' : ""}
-    ${opts.final ? '<span class="bk-trophy">★ Final · July 19 ★</span>' : ""}
+    ${opts.final ? `<span class="bk-trophy">★ Final · July 19 ★</span>` : ""}
     <span class="bk-meta">${opts.third ? "Bronze · " : ""}${fmtDate(m.date)} · ${m.city || m.venue || ""}</span>
     ${rows}
     ${notes.length ? `<span class="bk-note">${notes.join(" · ")}</span>` : ""}
+    ${championRibbon}
   </div>`;
 }
 
@@ -252,9 +270,34 @@ function setChapter(name) {
   gsap.to("html", { "--accent": ACCENTS[name], duration: 0.9, ease: "power2.out" });
 }
 
+/* hero chip + subtitle reflect actual tournament state — computed from
+   the data, not hardcoded, so a mid-tournament re-run of this page never
+   goes stale and a finished tournament never claims to still be "live" */
+function updateHeroState() {
+  const F = KO[WC.bracket.final];
+  const chip = document.getElementById("liveChip");
+  const sub = document.getElementById("roadSub");
+  const note = document.getElementById("footerNote");
+  if (F && F.hs !== null) {
+    chip.classList.add("chip-final");
+    chip.innerHTML = `<span class="live-dot live-dot-static" aria-hidden="true"></span>Full time · ${F.w} are Champions`;
+    sub.textContent = `Every result of the FIFA World Cup 2026™ — twelve groups, one bracket, one champion: ${F.w}.`;
+    if (note) note.innerHTML = `A concept showcase. Not affiliated with FIFA or adidas.<br />Final results — the tournament concluded ${fmtDate(F.date)}, 2026.`;
+    return;
+  }
+  /* tournament still in progress — name the furthest round with an unplayed match */
+  const order = ["R32", "R16", "QF", "SF", "3P", "F"];
+  let current = "Group Stage";
+  order.forEach((r) => {
+    if (Object.values(KO).some((m) => m.round === r && m.hs === null)) current = ROUND_NAMES[r] || r;
+  });
+  chip.innerHTML = `<span class="live-dot" aria-hidden="true"></span>Live · ${current}`;
+}
+
 let lenis = null;
 
 function boot() {
+  updateHeroState();
   renderBracket();
   renderGroups();
   renderFixtures();

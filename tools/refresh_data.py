@@ -121,15 +121,24 @@ def main():
 
     page = fetch("https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_knockout_stage")
     heads = [(hm.start(), hm.group(1)) for hm in re.finditer(r'<h[23][^>]*id="([^"]+)"[^>]*>', page)]
-    RMAP = [('Round_of_32', 'R32'), ('Round_of_16', 'R16'), ('Quarter-finals', 'QF'), ('Quarterfinals', 'QF'),
-            ('Semi-finals', 'SF'), ('Semifinals', 'SF'), ('Third_place', '3P'), ('Bronze', '3P'), ('Final', 'F')]
+    # exact heading-id → round map. Wikipedia's anchor ids have drifted before
+    # (e.g. the third-place heading became "Match_for_third_place" once the
+    # match was actually played) — match by exact id, not substring, so a
+    # future rename fails loud (ABORT) instead of silently mis-tagging matches.
+    ROUND_HEADINGS = {
+        'Round_of_32': 'R32', 'Round_of_16': 'R16',
+        'Quarter-finals': 'QF', 'Quarterfinals': 'QF',
+        'Semi-finals': 'SF', 'Semifinals': 'SF',
+        'Third_place': '3P', 'Third-place': '3P', 'Bronze': '3P',
+        'Match_for_third_place': '3P', 'Third_place_play-off': '3P',
+        'Final': 'F',
+    }
 
     def round_for(pos):
         last = None
         for hpos, hid in heads:
-            if hpos < pos:
-                for k, c in RMAP:
-                    if hid.startswith(k) or k in hid: last = c
+            if hpos < pos and hid in ROUND_HEADINGS:
+                last = ROUND_HEADINGS[hid]
         return last
 
     ko = []

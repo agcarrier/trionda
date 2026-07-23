@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>The Road — TRIONDA · FIFA World Cup 2026 Bracket</title>
-<meta name="description" content="The road to July 19 — live knockout bracket, group standings and all 72 group-stage results of the FIFA World Cup 2026." />
+<meta name="description" content="The road to July 19 — the full knockout bracket, final group standings and all 104 results of the FIFA World Cup 2026." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,12 +31,12 @@
 <main>
   <!-- ═══════════ HERO ═══════════ -->
   <section class="road-hero" id="top">
-    <p class="live-chip" data-reveal><span class="live-dot" aria-hidden="true"></span>Live · Quarter-finals</p>
+    <p class="live-chip" id="liveChip" data-reveal><span class="live-dot" aria-hidden="true"></span>Live</p>
     <h1 class="road-title">
       <span class="line"><span class="line-inner">THE ROAD</span></span>
       <span class="line road-title-2"><span class="line-inner">TO JULY 19</span></span>
     </h1>
-    <p class="road-sub" data-reveal>Every result of the FIFA World Cup 2026™ — twelve groups, one bracket, one wave still rolling.</p>
+    <p class="road-sub" id="roadSub" data-reveal>Every result of the FIFA World Cup 2026™ — twelve groups, one bracket, one wave still rolling.</p>
     <svg class="road-wave" viewBox="0 0 320 40" fill="none" aria-hidden="true">
       <path id="roadWave" d="M4 20 C 30 2, 56 2, 82 20 S 134 38, 160 20 S 212 2, 238 20 S 290 38, 316 20" />
     </svg>
@@ -49,7 +49,7 @@
   <section class="bracket-section" id="bracket">
     <p class="section-tag" data-reveal>01 — The knockout</p>
     <h2 class="section-title" data-reveal>Follow the wave<br />to the final</h2>
-    <p class="bracket-hint" data-reveal>The gold line is the path of results — it grows with every whistle.<span class="bracket-swipe"> Drag to explore ⟷</span></p>
+    <p class="bracket-hint" data-reveal>The gold line traces the road every winner walked, all the way to the final whistle.<span class="bracket-swipe"> Drag to explore ⟷</span></p>
 
     <div class="bracket-scroll" id="bracketScroll" tabindex="0" aria-label="Knockout bracket, horizontally scrollable">
       <div class="bracket-stage" id="bracketStage">
@@ -91,7 +91,7 @@
         <a href="#top">Back to top</a>
         <a href="/">The ball</a>
         <a href="#bracket">The bracket</a>
-        <p class="footer-fine">A concept showcase. Not affiliated with FIFA or adidas.<br />Results as of July 11, 2026.</p>
+        <p class="footer-fine" id="footerNote">A concept showcase. Not affiliated with FIFA or adidas.<br />Results as of July 11, 2026.</p>
       </div>
     </footer>
   </section>

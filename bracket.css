@@ -35,7 +35,9 @@
   border-radius: 2px;
   padding: 0.55rem 0.95rem;
   margin-bottom: 2rem;
+  transition: border-color 0.4s;
 }
+.live-chip.chip-final { border-color: rgba(201,162,75,0.5); }
 .live-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
@@ -43,6 +45,7 @@
   box-shadow: 0 0 10px var(--gold);
   animation: liveDot 1.6s ease-in-out infinite;
 }
+.live-dot.live-dot-static { animation: none; opacity: 1; }
 @keyframes liveDot { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.35; transform: scale(0.75);} }
 
 .road-title {
@@ -188,6 +191,17 @@
 .bk-row.bk-win .bk-score, .bk-row.bk-win .bk-code { color: var(--gold-bright); }
 .bk-row.bk-tbd { opacity: 0.45; font-style: italic; }
 
+.bk-place-tag {
+  margin-left: auto;
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  flex: none;
+}
+.bk-row.bk-win .bk-place-tag { color: var(--gold); }
+
 .bk-code {
   font-family: var(--font-display);
   font-size: 0.85rem;
@@ -269,6 +283,20 @@
 }
 .bk-third { opacity: 0.75; }
 .bk-third .bk-meta { color: var(--ink-faint); }
+
+.bk-champion-ribbon {
+  display: block;
+  text-align: center;
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(201,162,75,0.35);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  text-shadow: 0 0 18px rgba(201,162,75,0.5);
+}
 
 /* ═══════════ GROUPS ═══════════ */
 
